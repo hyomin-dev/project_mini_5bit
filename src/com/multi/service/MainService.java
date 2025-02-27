@@ -2,9 +2,13 @@ package com.multi.service;
 
 import com.multi.common.DBConnectionMgr;
 import com.multi.model.DAO.TravelDAO;
+import com.multi.model.DTO.Travel;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import static com.multi.common.JDBCConnect.getConnection;
 
 
 public class MainService {
@@ -25,4 +29,12 @@ public class MainService {
 
     }
 
+    public ArrayList<Travel> selectByName(String name) {
+        Connection conn = getConnection();
+        return travelDAO.selectByName(conn, name);
+    }
+
+    public void exitProgram() {
+        dbcp.freeConnection(conn);
+    }
 }
