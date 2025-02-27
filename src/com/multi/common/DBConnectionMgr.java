@@ -30,9 +30,9 @@ import java.util.Vector;
 public class DBConnectionMgr {
     private Vector connections = new Vector(10); //Connection 10
     private String _driver = "com.mysql.cj.jdbc.Driver",
-    _url = "jdbc:mysql://localhost:3306/",
-    _user = "",
-    _password = "";
+    _url = "jdbc:mysql://localhost:3306/project_mini",
+    _user = "chm",
+    _password = "0000";
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 10;
