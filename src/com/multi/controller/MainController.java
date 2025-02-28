@@ -15,6 +15,7 @@ public class MainController {
     public void selectByName(String name) {
         MainMenu mainMenu = new MainMenu();
         ArrayList<Travel> list = mainService.selectByName(name);
+
         try{
             if(list.isEmpty()){
                 mainMenu.displayNoData();
