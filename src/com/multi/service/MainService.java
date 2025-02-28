@@ -27,6 +27,17 @@ public class MainService {
 
     }
 
+    public ArrayList<Travel> selectByName(String name) {
+        Connection conn = null;
+        try {
+            conn = dbcp.getConnection();
+            return travelDAO.selectByName(conn, name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public ArrayList<Travel> selectByCount() {
         ArrayList<Travel> list = null;
         try {
@@ -99,3 +110,4 @@ public class MainService {
         }
     }
 }
+

@@ -4,6 +4,7 @@ import com.multi.controller.MainController;
 import com.multi.model.DTO.Travel;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -22,15 +23,19 @@ public class MainMenu {
                 switch(choice){
                     case 1->{}
                     case 2->{}
-                    case 3->{}
+                    case 3->{
+                        mainController.selectByName(inputName());
+                    }
                     case 4->{
                         //mainController.selectByCount(); //먼저 전부 가져오는 것으로 테스트*/
                         mainController.selectDistrictByCount();
                     }
                     case 5->{
-                        mainController.exitProgram();
-                        System.out.println("프로그램 종료");
-                        return;
+                        System.out.println("정말로 끝내시겠습니까??(y/n)");
+                        if ('y' == scanner.next().toLowerCase().charAt(0)) {
+                            mainController.exitProgram();
+                            return;  // 프로그램 종료
+                        }
                     }
                     case -1->{ //test용 count값 랜덤 배정
                         mainController.insertRandomCount();
@@ -39,7 +44,11 @@ public class MainMenu {
                         mainController.insertZeroCount();
                     }
                 }
-            }catch(Exception e){
+            }catch (InputMismatchException e) {
+                // 숫자가 아닌 값이 입력되었을 때 예외 처리
+                System.out.println("유효한 숫자를 입력해 주세요.");
+                scanner.nextLine();  // 잘못된 입력을 버퍼에서 제거
+            } catch(Exception e){
 
             }
         }
@@ -48,7 +57,24 @@ public class MainMenu {
     private void selectByCount() {
 
     }
+    private String inputName() {
+        System.out.println("관광지 이름 검색 : ");
 
+        return scanner.next();
+    }
+    public void displayNoData() {
+        System.out.println("조회된 결과가 없습니다.");
+    }
+    public void displayMemberList(ArrayList<Travel> list) {
+        System.out.println("\n조회된 관광지의 정보는 다음과 같습니다.");
+        System.out.println("----------------------------------------------------------");
+
+        for(Travel m: list) {
+            System.out.println(m);
+        }
+
+        System.out.println("----------------------------------------------------------");
+    }
 
     public String displayselectDistrictByCount(String message, ArrayList<Travel> list) { //예외처리 아직 안함
         System.out.println("success"+message);
@@ -78,7 +104,9 @@ public class MainMenu {
     public void displayError() {
         System.out.println("조회 결과 없음");
     }
-
+    public void displayError(String message) {
+        System.out.println("서비스 요청 처리 실패 : "+message);
+    }
 
     public void displayselectTouristAttByCount(String message, ArrayList<Travel> list, String district) {
         System.out.println("success"+message);

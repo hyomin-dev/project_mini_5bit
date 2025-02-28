@@ -23,6 +23,21 @@ public class MainController {
 
 
     }
+    public void selectByName(String name) {
+        MainMenu mainMenu = new MainMenu();
+        ArrayList<Travel> list = mainService.selectByName(name);
+
+        try{
+            if(list.isEmpty()){
+                mainMenu.displayNoData();
+            }else
+                mainMenu.displayMemberList(list);
+        }catch (Exception e){
+            e.printStackTrace();
+            mainMenu.displayError("특정 관광지 선택 실패");
+        }
+    }
+
 
     public void exitProgram() {
         mainService.exitProgram();
@@ -75,3 +90,4 @@ public class MainController {
             mainMenu.displayError();
     }
 }
+
