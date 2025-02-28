@@ -109,5 +109,24 @@ public class MainService {
             throw new RuntimeException(e);
         }
     }
+
+    public int updateTravelCount(ArrayList<Travel> list) {
+        int result = 0;
+        try{
+            conn = dbcp.getConnection();
+            conn.setAutoCommit(false);
+            result = travelDAO.updateTravelCount(conn,list);
+            if(result>0)
+                if(conn!=null) conn.commit();
+                else
+                if(conn!=null) conn.rollback();
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
 

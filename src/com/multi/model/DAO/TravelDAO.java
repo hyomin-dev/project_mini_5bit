@@ -173,5 +173,24 @@ public class TravelDAO {
         }
 
     }
+
+    public int updateTravelCount(Connection conn,ArrayList<Travel> list) {
+        int result = 0;
+        String sql = prop.getProperty("updateTravelCount");
+        PreparedStatement pstmt = null;
+        try{
+            pstmt = conn.prepareStatement(sql);
+            for(Travel travel :list){
+                pstmt.setInt(1,travel.getNo());
+                result += pstmt.executeUpdate();
+            }
+            return result;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally{
+            DBConnectionMgr.getInstance().freeConnection(pstmt);
+        }
+    }
 }
 

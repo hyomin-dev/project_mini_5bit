@@ -36,6 +36,23 @@ public class MainController {
             e.printStackTrace();
             mainMenu.displayError("특정 관광지 선택 실패");
         }
+
+        if(!list.isEmpty())
+            updateTravelCount(list);
+
+
+    }
+
+    private void updateTravelCount(ArrayList<Travel> list) {
+        MainMenu mainMenu = new MainMenu();
+        int result = 0;
+        result = mainService.updateTravelCount(list);
+        if(result>0)
+            mainMenu.displaySuccess("updateTravelCount OK!");
+        else
+            mainMenu.displayError("updateTravelCount fail");
+
+
     }
 
 
