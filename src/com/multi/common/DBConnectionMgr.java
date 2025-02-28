@@ -30,15 +30,15 @@ import java.util.Vector;
 public class DBConnectionMgr {
     private Vector connections = new Vector(10); //Connection 10
     private String _driver = "com.mysql.cj.jdbc.Driver",
-    _url = "jdbc:mysql://localhost:3306/",
-    _user = "",
-    _password = "";
+            _url = "jdbc:mysql://localhost:3306/scott",
+            _user = "scott",
+            _password = "tiger";
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 10;
     private static DBConnectionMgr instance = null;
 
-    private DBConnectionMgr() {
+    public DBConnectionMgr() {
     }
 
     /** Use this method to set the maximum number of open connections before
