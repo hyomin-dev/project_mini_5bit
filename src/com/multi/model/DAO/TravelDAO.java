@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class TravelDAO {
@@ -190,6 +191,75 @@ public class TravelDAO {
             throw new RuntimeException(e);
         }finally{
             DBConnectionMgr.getInstance().freeConnection(pstmt);
+        }
+    }
+
+    //김태용님
+    // 지역별 관광지 목록을 조회하는 메서드
+    public List<Travel> getAttractionsByRegion(Connection conn, String region) {
+        List<Travel> attractions = new ArrayList<>();
+
+        String sql = prop.getProperty("selectAttractionsByRegion"); // query.properties에서 SQL 가져오기
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, region);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Travel attraction = new Travel(
+                        rs.getInt("no"),
+                        rs.getString("district"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("count")
+                );
+                attractions.add(attraction);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return attractions;
+    }
+
+    // 관광지 번호로 상세 정보 조회하는 메서드
+    public Travel getAttractionByNo(Connection conn, int attractionNo) {
+        Travel attraction = null;
+        String sql = prop.getProperty("selectAttractionByNo");
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, attractionNo);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                attraction = new Travel(
+                        rs.getInt("no"),
+                        rs.getString("district"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("count")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return attraction;
+    }
+
+    // 조회수 증가 메서드
+    public void increaseViewCount(Connection conn, int attractionNo) {
+        String sql = prop.getProperty("updateViewCount");
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, attractionNo);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

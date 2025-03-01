@@ -22,7 +22,9 @@ public class MainMenu {
                 scanner.nextLine(); //버퍼 제거
                 switch(choice){
                     case 1->{}
-                    case 2->{}
+                    case 2->{
+                        mainController.showRegionMenu(); //김태용님
+                    }
                     case 3->{
                         mainController.selectByName(inputName());
                     }
@@ -44,7 +46,10 @@ public class MainMenu {
                         mainController.insertZeroCount();
                     }
                 }
-            }catch (InputMismatchException e) {
+            }catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+            catch (InputMismatchException e) {
                 // 숫자가 아닌 값이 입력되었을 때 예외 처리
                 System.out.println("유효한 숫자를 입력해 주세요.");
                 scanner.nextLine();  // 잘못된 입력을 버퍼에서 제거

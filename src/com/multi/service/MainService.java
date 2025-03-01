@@ -7,6 +7,7 @@ import com.multi.model.DTO.Travel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainService {
@@ -127,6 +128,44 @@ public class MainService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    //김태용님
+    // 지역별 관광지 목록 가져오기
+    public List<Travel> getAttractionsByRegion(String region) {
+        List<Travel> attractions;
+        try (Connection conn = dbcp.getConnection()) {
+            attractions = travelDAO.getAttractionsByRegion(conn, region);
+        } catch (SQLException e) {
+            throw new RuntimeException("DB 연결 오류", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return attractions;
+    }
+
+    // 관광지 번호로 상세 정보 가져오기
+    public Travel getAttractionByNo(int attractionNo) {
+        Travel attraction = null;
+        try (Connection conn = dbcp.getConnection()) {
+            attraction = travelDAO.getAttractionByNo(conn, attractionNo);
+        } catch (SQLException e) {
+            throw new RuntimeException("DB 연결 오류", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return attraction;
+    }
+
+    // 관광지 조회수 증가
+    public void increaseAttractionViewCount(int attractionNo) {
+        try (Connection conn = dbcp.getConnection()) {
+            travelDAO.increaseViewCount(conn, attractionNo);
+        } catch (SQLException e) {
+            throw new RuntimeException("DB 연결 오류", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
