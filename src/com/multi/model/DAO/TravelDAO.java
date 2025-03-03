@@ -88,9 +88,6 @@ public class TravelDAO {
         } finally{
             DBConnectionMgr.getInstance().freeConnection(pstmt,rs);
         }
-
-
-
     }
 
     public ArrayList<Travel> selectDistrictByCount(Connection conn) {
@@ -261,6 +258,38 @@ public class TravelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Travel> selectPage(Connection conn,int currPage, int pageSize) {
+        ArrayList<Travel> list = new ArrayList<>();
+        String sql = prop.getProperty("selectPage");
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try{
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, currPage*pageSize);
+            pstmt.setInt(2,pageSize);
+
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                Travel travel = new Travel();
+                travel.setNo(rs.getInt("no"));
+                travel.setDistrict(rs.getString("district"));
+                travel.setTitle(rs.getString("title"));
+                travel.setDescription(rs.getString("description"));
+                travel.setAddress(rs.getString("address"));
+                travel.setPhone(rs.getString("phone"));
+                travel.setCount(rs.getInt("count"));
+                list.add(travel);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally{
+            DBConnectionMgr.getInstance().freeConnection(pstmt, rs);
+        }
+
+        return list;
+
     }
 }
 

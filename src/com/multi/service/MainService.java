@@ -167,5 +167,18 @@ public class MainService {
             throw new RuntimeException(e);
         }
     }
+
+    public ArrayList<Travel> selectPage(int currPage, int pageSize) {
+        ArrayList<Travel> list = null;
+        try{
+            conn = dbcp.getConnection();
+            list = travelDAO.selectPage(conn,currPage, pageSize);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return list;
+
+    }
 }
 

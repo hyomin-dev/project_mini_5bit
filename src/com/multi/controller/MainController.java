@@ -22,8 +22,6 @@ public class MainController {
             mainMenu.displayselectByCount("selectByCount OK!!",list);
         else
             mainMenu.displayError();
-
-
     }
     public void selectByName(String name) {
         MainMenu mainMenu = new MainMenu();
@@ -111,8 +109,8 @@ public class MainController {
 
     //김태용님
 
-    // 권역별 관광지 목록 보여주기
-    public void showRegionMenu() {
+    // 권역별 관광지 목록 보여주기 --> view로 옮김
+   /* public void showRegionMenu() {
         while (true) {
             System.out.println("\n==== 권역별 관광지 목록 ====");
             System.out.println("1. 수도권");
@@ -142,10 +140,10 @@ public class MainController {
                 System.out.println("숫자를 입력해주세요.");
             }
         }
-    }
+    }*/
 
-    // 선택한 번호에 해당하는 권역 반환
-    private String getRegionByChoice(int choice) {
+    // 선택한 번호에 해당하는 권역 반환 --> view로 옮김
+   /* private String getRegionByChoice(int choice) {
         return switch (choice) {
             case 1 -> "수도권";
             case 2 -> "강원권";
@@ -155,7 +153,7 @@ public class MainController {
             case 6 -> "제주권";
             default -> null;
         };
-    }
+    }*/
 
     // 지역별 관광지 목록 보여주기
     public void showAttractionsByRegion(String region) {
@@ -193,7 +191,7 @@ public class MainController {
             // 페이지 네비게이션 메뉴 표시
             System.out.println("\n1. 이전 페이지");
             System.out.println("2. 다음 페이지");
-            System.out.println("3. 관광지 상세 보기");
+            //System.out.println("3. 관광지 상세 보기");
             System.out.println("0. 권역 선택으로 돌아가기");
             System.out.print("선택: ");
 
@@ -218,7 +216,7 @@ public class MainController {
                         }
                         break;
                     case 3:
-                        showAttractionDetail(attractions, startIdx, endIdx);
+                        //showAttractionDetail(attractions, startIdx, endIdx);
                         break;
                     default:
                         System.out.println("잘못된 선택입니다.");
@@ -229,7 +227,8 @@ public class MainController {
         }
     }
 
-    private void showAttractionDetail(List<Travel> attractions, int startIdx, int endIdx) {
+    // selectAttractionByNo, updateViewCount query없어서 상세보기 제거
+    /*private void showAttractionDetail(List<Travel> attractions, int startIdx, int endIdx) {
         System.out.print("상세 보기할 관광지 번호를 입력하세요: ");
         try {
             int attractionNo = Integer.parseInt(scanner.nextLine());
@@ -266,6 +265,25 @@ public class MainController {
         } catch (NumberFormatException e) {
             System.out.println("올바른 번호를 입력해주세요.");
         }
+    }*/
+
+    public boolean selectPage(int currPage, int pageSize) {
+        MainMenu mainMenu = new MainMenu();
+        ArrayList<Travel> list = null;
+        list = mainService.selectPage(currPage, pageSize);
+
+        if(!list.isEmpty()) {
+            mainMenu.displayAll(list);
+            return false;
+        }
+        else {
+            mainMenu.displayError();
+            return true;
+
+        }
     }
+
+    // 전체 목록 보여주기
+
 }
 
