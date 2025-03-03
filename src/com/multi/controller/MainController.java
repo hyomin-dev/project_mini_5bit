@@ -51,8 +51,6 @@ public class MainController {
             mainMenu.displaySuccess("updateTravelCount OK!");
         else
             mainMenu.displayError("updateTravelCount fail");
-
-
     }
 
 
@@ -155,8 +153,8 @@ public class MainController {
         };
     }*/
 
-    // 지역별 관광지 목록 보여주기
-    public void showAttractionsByRegion(String region) {
+    // 지역별 관광지 목록 보여주기 --> view로 돌림
+    /*public void showAttractionsByRegion(String region) {
         List<Travel> attractions = mainService.getAttractionsByRegion(region);
 
         if (attractions.isEmpty()) {
@@ -191,7 +189,7 @@ public class MainController {
             // 페이지 네비게이션 메뉴 표시
             System.out.println("\n1. 이전 페이지");
             System.out.println("2. 다음 페이지");
-            //System.out.println("3. 관광지 상세 보기");
+            System.out.println("3. 관광지 상세 보기");
             System.out.println("0. 권역 선택으로 돌아가기");
             System.out.print("선택: ");
 
@@ -216,7 +214,7 @@ public class MainController {
                         }
                         break;
                     case 3:
-                        //showAttractionDetail(attractions, startIdx, endIdx);
+                        showAttractionDetail(attractions, startIdx, endIdx);
                         break;
                     default:
                         System.out.println("잘못된 선택입니다.");
@@ -225,6 +223,20 @@ public class MainController {
                 System.out.println("숫자를 입력해주세요.");
             }
         }
+    }*/
+
+
+    public void showAttractionsByRegion(String region) {
+        MainMenu mainMenu = new MainMenu();
+        List<Travel> attractions = mainService.getAttractionsByRegion(region);
+
+        if (attractions.isEmpty()) {
+//            System.out.println("해당 지역에는 관광지가 없습니다.");
+            mainMenu.displayMessage("해당 지역에는 관광지가 없습니다.");
+            return;
+        }else
+            mainMenu.showAttractionsByRegion(attractions,region);
+
     }
 
     // selectAttractionByNo, updateViewCount query없어서 상세보기 제거

@@ -3,9 +3,9 @@ package com.multi.view;
 import com.multi.controller.MainController;
 import com.multi.model.DTO.Travel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -64,7 +64,7 @@ public class MainMenu {
         }
     }
 
-    private void selectPage() {
+    private void selectPage() { //1번 기능
         int pageSize = 8;
         int currPage = 0;
         boolean isFirst = true;
@@ -103,7 +103,7 @@ public class MainMenu {
 
     }
 
-    private void showRegionMenu() {
+    private void showRegionMenu() { // 2번 기능
         while (true) {
             System.out.println("\n==== 권역별 관광지 목록 ====");
             System.out.println("1. 수도권");
@@ -135,7 +135,7 @@ public class MainMenu {
         }
     }
 
-    private String getRegionByChoice(int choice) {
+    private String getRegionByChoice(int choice) { // 2번 기능
         return switch (choice) {
             case 1 -> "수도권";
             case 2 -> "강원권";
@@ -145,6 +145,66 @@ public class MainMenu {
             case 6 -> "제주권";
             default -> null;
         };
+    }
+
+    public void showAttractionsByRegion(List<Travel> attractions, String region) { //2번 기능
+        int totalAttractions = attractions.size();
+        int itemsPerPage = 5; // 한 페이지당 표시할 관광지 수
+        int totalPages = (int) Math.ceil((double) totalAttractions / itemsPerPage);
+        int currentPage = 1;
+
+        while (true) {
+            System.out.println("\n==== " + region + " 관광지 목록 (" + currentPage + "/" + totalPages + ") ====");
+
+            // 현재 페이지에 표시할 관광지 범위 계산
+            int startIdx = (currentPage - 1) * itemsPerPage;
+            int endIdx = Math.min(startIdx + itemsPerPage, totalAttractions);
+
+            // 관광지 목록 표시
+            for (int i = startIdx; i < endIdx; i++) {
+                Travel attraction = attractions.get(i);
+                System.out.println("번호: " + attraction.getNo());
+                System.out.println("제목: " + attraction.getTitle());
+                System.out.println("설명: " + attraction.getDescription());
+                System.out.println("주소: " + attraction.getAddress());
+                System.out.println("전화번호: " + attraction.getPhone());
+                System.out.println("조회수: " + attraction.getCount());
+                System.out.println("===================================");
+            }
+
+            // 페이지 네비게이션 메뉴 표시
+            System.out.println("\n1. 이전 페이지");
+            System.out.println("2. 다음 페이지");
+            System.out.println("0. 권역 선택으로 돌아가기");
+            System.out.print("선택: ");
+
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                switch (choice) {
+                    case 0:
+                        return;
+                    case 1:
+                        if (currentPage > 1) {
+                            currentPage--;
+                        } else {
+                            System.out.println("첫 페이지입니다.");
+                        }
+                        break;
+                    case 2:
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                        } else {
+                            System.out.println("마지막 페이지입니다.");
+                        }
+                        break;
+                    default:
+                        System.out.println("잘못된 선택입니다.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+        }
     }
 
 
@@ -239,4 +299,6 @@ public class MainMenu {
     public void displayMessage(String message){
         System.out.println(message);
     }
+
+
 }
