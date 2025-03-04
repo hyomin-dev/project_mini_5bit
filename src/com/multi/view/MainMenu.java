@@ -228,7 +228,7 @@ public class MainMenu {
 
     public String displayselectDistrictByCount(String message, ArrayList<TravelVO> list){ //예외처리 함
        displaySuccess(message);
-        System.out.println("-------------지역별 우선순위----------------");
+        System.out.println("--------지역별 우선순위--------");
         for (int i = 0; i < list.size(); i++) {
             String s = new StringBuilder()
                     .append(i + 1 + "순위 지역: ")
@@ -273,8 +273,8 @@ public class MainMenu {
 
     public void displayselectTouristAttByCount(String message, HashMap<TravelVO,Integer> map, String district) {
         displaySuccess(message);
-        System.out.println("----------------" + district + "지역 --------------------");
-        System.out.println("---------------" + "인기 관광지 목록" + "-----------------");
+        System.out.println("------------------------ " + district + " 지역 -----------------------");
+        System.out.println("----------------------" + "인기 관광지 목록" + "-----------------------");
         List<TravelVO> keySet = new ArrayList<>(map.keySet());
         keySet.sort((o1,o2)->map.get(o1).compareTo(map.get(o2)));
         String format = "순위: %d, 조회수: %-2d, 지역: %3s, 관광지: %s\n";
@@ -282,7 +282,6 @@ public class MainMenu {
             int rank = map.get(travelVo);
             System.out.printf(format,rank,travelVo.getCount(),district,travelVo.getTitle());
         }
-
     }
 
     public void displayselectByCount(String message, ArrayList<TravelVO> list) {
