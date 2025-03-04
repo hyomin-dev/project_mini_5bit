@@ -1,142 +1,110 @@
 package com.multi.controller;
 
 
-import com.multi.common.exception.CustomerException;
-import com.multi.model.DTO.TravelVO;
-import com.multi.service.TravelService;
+import com.multi.model.DTO.Travel;
+import com.multi.service.MainService;
 import com.multi.view.MainMenu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 
 public class MainController {
-    private final TravelService travelService = new TravelService();
+    private final MainService mainService = new MainService();
     private final Scanner scanner = new Scanner(System.in); // 김태용님
 
-    /*public void selectByCount() {
-        ArrayList<TravelVO> list = null;
+    public void selectByCount() {
+        ArrayList<Travel> list = null;
         MainMenu mainMenu = new MainMenu();
-        list = travelService.selectByCount();
-        if(!list.isEmpty())
-            mainMenu.displayselectByCount("selectByCount OK!!",list);
+        list = mainService.selectByCount();
+        if (!list.isEmpty())
+            mainMenu.displayselectByCount("selectByCount OK!!", list);
         else
             mainMenu.displayError();
-    }*/
+    }
+
     public void selectByName(String name) {
         MainMenu mainMenu = new MainMenu();
-        ArrayList<TravelVO> list=null;
+        ArrayList<Travel> list = mainService.selectByName(name);
 
-        try{
-            list = travelService.selectByName(name);
-            if(list.isEmpty()){
+        try {
+            if (list.isEmpty()) {
                 mainMenu.displayNoData();
-            }else
+            } else
                 mainMenu.displayMemberList(list);
-            if(!list.isEmpty())
-                updateTravelCount(list);
-
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             mainMenu.displayError("특정 관광지 선택 실패");
         }
+
+        if (!list.isEmpty())
+            updateTravelCount(list);
+
+
     }
 
-    private void updateTravelCount(ArrayList<TravelVO> list) {
+    private void updateTravelCount(ArrayList<Travel> list) {
         MainMenu mainMenu = new MainMenu();
-        try{
-            int result = 0;
-            result = travelService.updateTravelCount(list);
-            if(result>0)
-                mainMenu.displaySuccess("updateTravelCount OK!");
-            else
-                mainMenu.displayError("updateTravelCount fail");
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
+        int result = 0;
+        result = mainService.updateTravelCount(list);
+        if (result > 0)
+            mainMenu.displaySuccess("updateTravelCount OK!");
+        else
+            mainMenu.displayError("updateTravelCount fail");
+
+
     }
+
 
     public void exitProgram() {
-        travelService.exitProgram();
+        mainService.exitProgram();
     }
 
     public void selectDistrictByCount() {
         MainMenu mainMenu = new MainMenu();
-        try{
-            ArrayList<TravelVO> list = null;
-
-            String district=null;
-            list = travelService.selectDistrictByCount();
-            if(!list.isEmpty())
-                district = mainMenu.displayselectDistrictByCount("selectDistrictByCount OK!!",list);
-            else {
-                mainMenu.displayError("selectDistrictByCount fail");
-                return;
-            }
-            selectTouristAttByCount(district);
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
+        ArrayList<Travel> list = null;
+        String district = null;
+        list = mainService.selectDistrictByCount();
+        if (!list.isEmpty())
+            district = mainMenu.displayselectDistrictByCount("selectDistrictByCount OK!!", list);
+        else {
+            mainMenu.displayError();
+            return;
         }
+
+        if (district == null) {
+            mainMenu.displayHome();
+            return;
+        } else
+            list = mainService.selectTouristAttByCount(district);
+
+        if (!list.isEmpty())
+            mainMenu.displayselectTouristAttByCount("selectTouristAttByCount OK!!", list, district);
+        else
+            mainMenu.displayError();
+
     }
-
-    public void selectTouristAttByCount(String district){
-        MainMenu mainMenu = new MainMenu();
-        try{
-//            ArrayList<TravelVO> list = null;
-            HashMap<TravelVO,Integer> map = null;
-
-            if(district==null) {
-                mainMenu.displayHome();
-                return;
-            }
-            else
-                map = travelService.selectTouristAttByCount(district);
-
-            if(!map.isEmpty())
-                mainMenu.displayselectTouristAttByCount("selectTouristAttByCount OK!!",map,district);
-            else
-                mainMenu.displayError("조회 결과 없습니다.");
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
-    }
-
-
 
     public void insertRandomCount() {
         MainMenu mainMenu = new MainMenu();
-        try{
-            int result = 0;
-            result = travelService.insertRandomCount();
-            if(result>0)
-                mainMenu.displaySuccess("insertRandomCount OK!!");
-            else
-                mainMenu.displayError("insertRandomCount fail");
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
-
+        int result = 0;
+        result = mainService.insertRandomCount();
+        if (result > 0)
+            mainMenu.displaySuccess("insertRandomCount");
+        else
+            mainMenu.displayError();
 
     }
 
     public void insertZeroCount() {
         MainMenu mainMenu = new MainMenu();
-        try{
-            int result = 0;
-            result = travelService.insertZeroCount();
-            if(result>0)
-                mainMenu.displaySuccess("insertZeroCount OK!!");
-            else
-                mainMenu.displayError("insertZeroCount fail");
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
-
+        int result = 0;
+        result = mainService.insertZeroCount();
+        if (result > 0)
+            mainMenu.displaySuccess("insertZeroCount");
+        else
+            mainMenu.displayError();
     }
 
     //김태용님
@@ -187,12 +155,12 @@ public class MainController {
         };
     }*/
 
-    // 지역별 관광지 목록 보여주기 --> view로 돌림
-    /*public void showAttractionsByRegion(String region) {
+    // 지역별 관광지 목록 보여주기
+    public void showAttractionsByRegion(String region) {
         List<Travel> attractions = mainService.getAttractionsByRegion(region);
 
         if (attractions.isEmpty()) {
-            System.out.println("해당 지역에는 관광지가 없습니다.");
+            System.out.println("해당 권역에는 관광지가 없습니다.");
             return;
         }
 
@@ -202,7 +170,7 @@ public class MainController {
         int currentPage = 1;
 
         while (true) {
-            System.out.println("\n==== " + region + " 관광지 목록 (" + currentPage + "/" + totalPages + ") ====");
+            System.out.println("\n----------------- " + region + " 관광지 목록 (" + currentPage + "/" + totalPages + ") -----------------");
 
             // 현재 페이지에 표시할 관광지 범위 계산
             int startIdx = (currentPage - 1) * itemsPerPage;
@@ -217,14 +185,18 @@ public class MainController {
                 System.out.println("주소: " + attraction.getAddress());
                 System.out.println("전화번호: " + attraction.getPhone());
                 System.out.println("조회수: " + attraction.getCount());
-                System.out.println("===================================");
+                System.out.println("--------------------------------------------------------");
             }
 
             // 페이지 네비게이션 메뉴 표시
-            System.out.println("\n1. 이전 페이지");
-            System.out.println("2. 다음 페이지");
-            System.out.println("3. 관광지 상세 보기");
-            System.out.println("0. 권역 선택으로 돌아가기");
+//            System.out.println("\n1. 이전 페이지");
+//            System.out.println("2. 다음 페이지");
+//            //System.out.println("3. 관광지 상세 보기");
+//            System.out.println("0. 권역 선택으로 돌아가기");
+//            System.out.print("선택: ");
+            System.out.println("\n이전 페이지 : 1");
+            System.out.println("다음 페이지 : 2");
+            System.out.println("권역 선택 화면으로 돌아가기 : 0");
             System.out.print("선택: ");
 
             try {
@@ -248,7 +220,7 @@ public class MainController {
                         }
                         break;
                     case 3:
-                        showAttractionDetail(attractions, startIdx, endIdx);
+                        //showAttractionDetail(attractions, startIdx, endIdx);
                         break;
                     default:
                         System.out.println("잘못된 선택입니다.");
@@ -257,24 +229,6 @@ public class MainController {
                 System.out.println("숫자를 입력해주세요.");
             }
         }
-    }*/
-
-
-    public void showAttractionsByRegion(String region) {
-        MainMenu mainMenu = new MainMenu();
-        try{
-            List<TravelVO> attractions = travelService.getAttractionsByRegion(region);
-
-            if (attractions.isEmpty()) {
-//            System.out.println("해당 지역에는 관광지가 없습니다.");
-                mainMenu.displayMessage("해당 지역에는 관광지가 없습니다.");
-                return;
-            }else
-                mainMenu.showAttractionsByRegion(attractions,region);
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
-        }
-
     }
 
     // selectAttractionByNo, updateViewCount query없어서 상세보기 제거
@@ -319,26 +273,17 @@ public class MainController {
 
     public boolean selectPage(int currPage, int pageSize) {
         MainMenu mainMenu = new MainMenu();
-        boolean result=false;
-        try{
-            ArrayList<TravelVO> list = null;
-            list = travelService.selectPage(currPage, pageSize);
+        ArrayList<Travel> list = null;
+        list = mainService.selectPage(currPage, pageSize);
 
-            if(!list.isEmpty()) {
-                mainMenu.displayAll(list);
-                result = false;
-            }
-            else {
-                mainMenu.displayError("조회 결과 없습니다.");
-                result = true;
-            }
-        }catch(CustomerException e){
-            System.err.println(e.getMessage());
+        if (!list.isEmpty()) {
+            mainMenu.displayAll(list);
+            return false;
+        } else {
+            mainMenu.displayError();
+            return true;
+
         }
-       return result;
     }
-
-    // 전체 목록 보여주기
-
 }
 
