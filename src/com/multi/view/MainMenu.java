@@ -176,9 +176,9 @@ public class MainMenu {
             }
 
             // 페이지 네비게이션 메뉴 표시
-            System.out.println("\n1. 이전 페이지");
-            System.out.println("2. 다음 페이지");
-            System.out.println("0. 권역 선택으로 돌아가기");
+            System.out.println("\n이전 페이지 : 1");
+            System.out.println("다음 페이지 : 2");
+            System.out.println("권역 선택 화면으로 돌아가기 : 0");
             System.out.print("선택: ");
 
             try {
