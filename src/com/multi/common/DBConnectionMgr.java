@@ -79,8 +79,8 @@ public class DBConnectionMgr {
             throws SQLException {
         // 이미 초기화된 커넥션이 있을 경우 다시 초기화하지 않음
         if (connections.size() > 0) {
-            System.out.println("Connection pool is already initialized with " + connections.size() + " connections.");
-            printAllConnections();
+            //System.out.println("Connection pool is already initialized with " + connections.size() + " connections.");
+            //printAllConnections();
 
             return; // 이미 초기화된 경우 메서드를 종료
         }
@@ -92,7 +92,7 @@ public class DBConnectionMgr {
             c = createConnection();
             co = new ConnectionObject(c, false);
             connections.addElement(co);
-            System.out.println("ConnectionPoolManager: Adding new DB connection to pool (" + connections.size() + ")");
+            //System.out.println("ConnectionPoolManager: Adding new DB connection to pool (" + connections.size() + ")");
         }
     }
 
@@ -130,16 +130,16 @@ public class DBConnectionMgr {
                 // Connection is bad, remove from pool
                 if (badConnection) {
                     connections.removeElementAt(i);
-                    System.out.println("ConnectionPoolManager: Remove disconnected DB connection #" + i);
+                    //System.out.println("ConnectionPoolManager: Remove disconnected DB connection #" + i);
                     continue;
                 }
 
                 c = co.connection;
                 co.inUse = true;
 
-                System.out.println("Thread " + Thread.currentThread().getId() + " existing  got new connection."+ c);
+                //System.out.println("Thread " + Thread.currentThread().getId() + " existing  got new connection."+ c);
 
-                System.out.println("ConnectionPoolManager: Using existing DB connection #" + (i + 1));
+                //System.out.println("ConnectionPoolManager: Using existing DB connection #" + (i + 1));
                 break;
 
 
@@ -150,7 +150,7 @@ public class DBConnectionMgr {
             c = createConnection();
             co = new ConnectionObject(c, true);
             connections.addElement(co);
-            System.out.println("Thread " + Thread.currentThread().getId() + " created and got new connection."+ c);
+            //System.out.println("Thread " + Thread.currentThread().getId() + " created and got new connection."+ c);
 
         }
         return c;
@@ -167,7 +167,7 @@ public class DBConnectionMgr {
             co = (ConnectionObject) connections.get(i);
             if (c == co.connection) {
                 co.inUse = false;
-                System.out.println("Thread " + Thread.currentThread().getId() + " released connection #" + (i + 1) + c);
+                //System.out.println("Thread " + Thread.currentThread().getId() + " released connection #" + (i + 1) + c);
 
                 break;
             }
@@ -263,7 +263,7 @@ public class DBConnectionMgr {
 
     /** Closes all connections and clears out the connection pool */
     public void releaseFreeConnections() {
-        System.out.println("ConnectionPoolManager.releaseFreeConnections()");
+        //System.out.println("ConnectionPoolManager.releaseFreeConnections()");
 
         Connection c = null;
         ConnectionObject co = null;
@@ -277,7 +277,7 @@ public class DBConnectionMgr {
 
     /** Closes all connections and clears out the connection pool */
     public void finalize() {
-        System.out.println("ConnectionPoolManager.finalize()");
+        //System.out.println("ConnectionPoolManager.finalize()");
 
         Connection c = null;
         ConnectionObject co = null;

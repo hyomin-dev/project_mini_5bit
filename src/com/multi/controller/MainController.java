@@ -1,108 +1,142 @@
 package com.multi.controller;
 
 
-import com.multi.model.DTO.Travel;
-import com.multi.service.MainService;
+import com.multi.common.exception.CustomerException;
+import com.multi.model.DTO.TravelVO;
+import com.multi.service.TravelService;
 import com.multi.view.MainMenu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 
 public class MainController {
-    private final MainService mainService = new MainService();
+    private final TravelService travelService = new TravelService();
     private final Scanner scanner = new Scanner(System.in); // 김태용님
 
-    public void selectByCount() {
-        ArrayList<Travel> list = null;
+    /*public void selectByCount() {
+        ArrayList<TravelVO> list = null;
         MainMenu mainMenu = new MainMenu();
-        list = mainService.selectByCount();
+        list = travelService.selectByCount();
         if(!list.isEmpty())
             mainMenu.displayselectByCount("selectByCount OK!!",list);
         else
             mainMenu.displayError();
-    }
+    }*/
     public void selectByName(String name) {
         MainMenu mainMenu = new MainMenu();
-        ArrayList<Travel> list = mainService.selectByName(name);
+        ArrayList<TravelVO> list=null;
 
         try{
+            list = travelService.selectByName(name);
             if(list.isEmpty()){
                 mainMenu.displayNoData();
             }else
                 mainMenu.displayMemberList(list);
-        }catch (Exception e){
+            if(!list.isEmpty())
+                updateTravelCount(list);
+
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
+        catch (Exception e){
             e.printStackTrace();
             mainMenu.displayError("특정 관광지 선택 실패");
         }
-
-        if(!list.isEmpty())
-            updateTravelCount(list);
-
-
     }
 
-    private void updateTravelCount(ArrayList<Travel> list) {
+    private void updateTravelCount(ArrayList<TravelVO> list) {
         MainMenu mainMenu = new MainMenu();
-        int result = 0;
-        result = mainService.updateTravelCount(list);
-        if(result>0)
-            mainMenu.displaySuccess("updateTravelCount OK!");
-        else
-            mainMenu.displayError("updateTravelCount fail");
+        try{
+            int result = 0;
+            result = travelService.updateTravelCount(list);
+            if(result>0)
+                mainMenu.displaySuccess("updateTravelCount OK!");
+            else
+                mainMenu.displayError("updateTravelCount fail");
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
     }
-
 
     public void exitProgram() {
-        mainService.exitProgram();
+        travelService.exitProgram();
     }
 
     public void selectDistrictByCount() {
         MainMenu mainMenu = new MainMenu();
-        ArrayList<Travel> list = null;
-        String district=null;
-        list = mainService.selectDistrictByCount();
-        if(!list.isEmpty())
-            district = mainMenu.displayselectDistrictByCount("selectDistrictByCount OK!!",list);
-        else {
-            mainMenu.displayError();
-            return;
+        try{
+            ArrayList<TravelVO> list = null;
+
+            String district=null;
+            list = travelService.selectDistrictByCount();
+            if(!list.isEmpty())
+                district = mainMenu.displayselectDistrictByCount("selectDistrictByCount OK!!",list);
+            else {
+                mainMenu.displayError("selectDistrictByCount fail");
+                return;
+            }
+            selectTouristAttByCount(district);
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
         }
-
-        if(district==null) {
-            mainMenu.displayHome();
-            return;
-        }
-        else
-            list = mainService.selectTouristAttByCount(district);
-
-        if(!list.isEmpty())
-            mainMenu.displayselectTouristAttByCount("selectTouristAttByCount OK!!",list,district);
-        else
-            mainMenu.displayError();
-
     }
+
+    public void selectTouristAttByCount(String district){
+        MainMenu mainMenu = new MainMenu();
+        try{
+//            ArrayList<TravelVO> list = null;
+            HashMap<TravelVO,Integer> map = null;
+
+            if(district==null) {
+                mainMenu.displayHome();
+                return;
+            }
+            else
+                map = travelService.selectTouristAttByCount(district);
+
+            if(!map.isEmpty())
+                mainMenu.displayselectTouristAttByCount("selectTouristAttByCount OK!!",map,district);
+            else
+                mainMenu.displayError("조회 결과 없습니다.");
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
+    }
+
+
 
     public void insertRandomCount() {
         MainMenu mainMenu = new MainMenu();
-        int result = 0;
-        result = mainService.insertRandomCount();
-        if(result>0)
-            mainMenu.displaySuccess("insertRandomCount");
-        else
-            mainMenu.displayError();
+        try{
+            int result = 0;
+            result = travelService.insertRandomCount();
+            if(result>0)
+                mainMenu.displaySuccess("insertRandomCount OK!!");
+            else
+                mainMenu.displayError("insertRandomCount fail");
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
+
 
     }
 
     public void insertZeroCount() {
         MainMenu mainMenu = new MainMenu();
-        int result = 0;
-        result = mainService.insertZeroCount();
-        if(result>0)
-            mainMenu.displaySuccess("insertZeroCount");
-        else
-            mainMenu.displayError();
+        try{
+            int result = 0;
+            result = travelService.insertZeroCount();
+            if(result>0)
+                mainMenu.displaySuccess("insertZeroCount OK!!");
+            else
+                mainMenu.displayError("insertZeroCount fail");
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
+
     }
 
     //김태용님
@@ -228,14 +262,18 @@ public class MainController {
 
     public void showAttractionsByRegion(String region) {
         MainMenu mainMenu = new MainMenu();
-        List<Travel> attractions = mainService.getAttractionsByRegion(region);
+        try{
+            List<TravelVO> attractions = travelService.getAttractionsByRegion(region);
 
-        if (attractions.isEmpty()) {
+            if (attractions.isEmpty()) {
 //            System.out.println("해당 지역에는 관광지가 없습니다.");
-            mainMenu.displayMessage("해당 지역에는 관광지가 없습니다.");
-            return;
-        }else
-            mainMenu.showAttractionsByRegion(attractions,region);
+                mainMenu.displayMessage("해당 지역에는 관광지가 없습니다.");
+                return;
+            }else
+                mainMenu.showAttractionsByRegion(attractions,region);
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
+        }
 
     }
 
@@ -281,18 +319,23 @@ public class MainController {
 
     public boolean selectPage(int currPage, int pageSize) {
         MainMenu mainMenu = new MainMenu();
-        ArrayList<Travel> list = null;
-        list = mainService.selectPage(currPage, pageSize);
+        boolean result=false;
+        try{
+            ArrayList<TravelVO> list = null;
+            list = travelService.selectPage(currPage, pageSize);
 
-        if(!list.isEmpty()) {
-            mainMenu.displayAll(list);
-            return false;
+            if(!list.isEmpty()) {
+                mainMenu.displayAll(list);
+                result = false;
+            }
+            else {
+                mainMenu.displayError("조회 결과 없습니다.");
+                result = true;
+            }
+        }catch(CustomerException e){
+            System.err.println(e.getMessage());
         }
-        else {
-            mainMenu.displayError();
-            return true;
-
-        }
+       return result;
     }
 
     // 전체 목록 보여주기
