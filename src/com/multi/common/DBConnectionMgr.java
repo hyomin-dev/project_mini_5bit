@@ -24,15 +24,27 @@
  */
 package com.multi.common;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Vector;
 public class DBConnectionMgr {
     private Vector connections = new Vector(10); //Connection 10
-    private String _driver = "com.mysql.cj.jdbc.Driver",
-    _url = "jdbc:mysql://localhost:3306/travel_db",//project_mini
-    _user = "chm",
-    _password = "0000";
+    private Properties prop = new Properties();    {
+        try {
+            prop.load(new FileReader("./resources/driver.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String _driver = prop.getProperty("driver"),
+    _url = prop.getProperty("url"),
+    _user = prop.getProperty("user"),
+    _password = prop.getProperty("password");
+
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 10;

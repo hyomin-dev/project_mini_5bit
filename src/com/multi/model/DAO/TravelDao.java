@@ -1,6 +1,5 @@
 package com.multi.model.DAO;
 
-
 import com.multi.common.DBConnectionMgr;
 import com.multi.common.exception.CustomerException;
 import com.multi.model.DTO.TravelVO;
@@ -56,44 +55,13 @@ public class TravelDao {
             }
         }
         catch (SQLException e) {
-//            throw new RuntimeException("데이터베이스 오류 발생", e);
             throwSQLException(e);
         }
         finally {
-//            DBConnectionMgr dbcp = new DBConnectionMgr();
-//            dbcp.freeConnection(conn);
             DBConnectionMgr.getInstance().freeConnection(conn);
         }
         return list;
     }
-
-    /*public ArrayList<TravelVO> selectByCount(Connection conn) {
-        String sql = prop.getProperty("selectAll");
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        ArrayList<TravelVO> list = new ArrayList<>();
-        try{
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            while(rs.next()){
-                TravelVO travel = new TravelVO();
-                travel.setNo(rs.getInt("no"));
-                travel.setDistrict(rs.getString("district"));
-                travel.setTitle(rs.getString("title"));
-                travel.setDescription(rs.getString("description"));
-                travel.setAddress(rs.getString("address"));
-                travel.setPhone(rs.getString("phone"));
-                travel.setCount(rs.getInt("count"));
-                list.add(travel);
-            }
-            return list;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally{
-            DBConnectionMgr.getInstance().freeConnection(pstmt,rs);
-        }
-    }*/
 
     public ArrayList<TravelVO> selectDistrictByCount(Connection conn) throws CustomerException{
         String sql = prop.getProperty("selectDistrictByCount");
@@ -113,7 +81,6 @@ public class TravelDao {
                 }
             }
         }catch (SQLException e) {
-//            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return list;
@@ -132,12 +99,10 @@ public class TravelDao {
                     TravelVO travel = new TravelVO();
                     travel.setTitle(rs.getString("title"));
                     travel.setCount(rs.getInt("count"));
-
-                    map.put(travel,rs.getInt("rank_count"));
+                    map.put(travel,rs.getInt("rank_count")); //관광지의 rank 값을 map의 value로 저장
                 }
             }
         }catch (SQLException e) {
-//            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return map;
@@ -150,7 +115,6 @@ public class TravelDao {
         try(PreparedStatement pstmt = conn.prepareStatement(sql);){
             result = pstmt.executeUpdate();
         }catch (SQLException e) {
-//            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return result;
@@ -162,7 +126,6 @@ public class TravelDao {
         try(PreparedStatement pstmt  = conn.prepareStatement(sql);){
             result = pstmt.executeUpdate();
         }catch (SQLException e) {
-//            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return result;
@@ -178,7 +141,6 @@ public class TravelDao {
                 result += pstmt.executeUpdate();
             }
         }catch (SQLException e) {
-//            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return result;
@@ -208,9 +170,7 @@ public class TravelDao {
                     attractions.add(attraction);
                 }
             }
-
         } catch (SQLException e) {
-//            e.printStackTrace();
             throwSQLException(e);
         }
         return attractions;
@@ -237,22 +197,22 @@ public class TravelDao {
                 );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throwSQLException(e);
         }
-
         return attraction;
     }
 
     // 조회수 증가 메서드
-    public void increaseViewCount(Connection conn, int attractionNo) {
-        String sql = prop.getProperty("updateViewCount");
-
+    public int increaseViewCount(Connection conn, int attractionNo) {
+        String sql = prop.getProperty("updateTravelCount");
+        int result = 0;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, attractionNo);
-            pstmt.executeUpdate();
+            result = pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throwSQLException(e);
         }
+        return result;
     }
 
     public ArrayList<TravelVO> selectPage(Connection conn,int currPage, int pageSize) throws CustomerException {
@@ -277,7 +237,6 @@ public class TravelDao {
                 }
             }
         }catch (SQLException e){
-            //            throw new RuntimeException(e);
             throwSQLException(e);
         }
         return list;
@@ -285,14 +244,7 @@ public class TravelDao {
 
     private void throwSQLException(SQLException e) throws CustomerException{
 
-//        if(e.getMessage().contains("Duplicate")&& e.getMessage().contains("member.uk_member_id"))
-//            throw new CustomerException("입력하신 아이디는 기존의 아이디와중복됩니다.");
-//        else if(e.getMessage().contains("Data too long"))
-//            throw new CustomerException("입력하신 데이터가 입력 가능 범위를 초과했습니다.");
-//        else if(e.getMessage().contains("foreign key")&&e.getMessage().contains("CATEGORY_CODE"))
-//            throw new CustomerException("카테고리는 10, 20, 30, 40, 50, 60, 70 중 하나를 선택하세요.");
-//        else
-            throw new CustomerException("데이터베이스 오류 발생!!"+e.getMessage());
+        throw new CustomerException("데이터베이스 오류 발생!! "+e.getMessage());
 
     }
 }

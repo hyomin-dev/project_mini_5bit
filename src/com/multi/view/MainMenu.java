@@ -129,7 +129,6 @@ public class MainMenu {
                 if (choice == 0) {
                     return; // 이전 메뉴로 돌아가기
                 }
-
                 String region = getRegionByChoice(choice);
 
                 if (region != null) {
@@ -183,6 +182,7 @@ public class MainMenu {
             // 페이지 네비게이션 메뉴 표시
             System.out.println("\n이전 페이지 : 1");
             System.out.println("다음 페이지 : 2");
+            System.out.println("상세보기: 3");
             System.out.println("권역 선택 화면으로 돌아가기 : 0");
             System.out.print("선택: ");
 
@@ -206,6 +206,9 @@ public class MainMenu {
                             System.out.println("마지막 페이지입니다.");
                         }
                         break;
+                    case 3:
+                       showAttractionDetail(attractions, startIdx, endIdx);
+                        break;
                     default:
                         System.out.println("잘못된 선택입니다.");
                 }
@@ -215,10 +218,49 @@ public class MainMenu {
         }
     }
 
+    private void showAttractionDetail(List<TravelVO> attractions, int startIdx, int endIdx) {
+        System.out.print("상세 보기할 관광지 번호를 입력하세요: ");
+        try {
+            int attractionNo = Integer.parseInt(scanner.nextLine());
+
+            TravelVO selectedAttraction = null;
+            for (int i = startIdx; i < endIdx; i++) {
+                TravelVO attraction = attractions.get(i);
+                if (attraction.getNo() == attractionNo) {
+                    selectedAttraction = attraction;
+                    break;
+                }
+            }
+
+            if (selectedAttraction != null) {
+                // 관광지 상세 정보 표시 및 조회수 증가 처리
+                mainController.increaseAttractionViewCount(selectedAttraction.getNo());
+                TravelVO updatedAttraction = mainController.getAttractionByNo(selectedAttraction.getNo());
+                if(updatedAttraction ==null)
+                    return;
+
+                System.out.println("\n==== 관광지 상세 정보 ====");
+                System.out.println("번호: " + updatedAttraction.getNo());
+                System.out.println("지역: " + updatedAttraction.getDistrict());
+                System.out.println("제목: " + updatedAttraction.getTitle());
+                System.out.println("설명: " + updatedAttraction.getDescription());
+                System.out.println("주소: " + updatedAttraction.getAddress());
+                System.out.println("전화번호: " + updatedAttraction.getPhone());
+                System.out.println("조회수: " + updatedAttraction.getCount());
+                System.out.println("===================================");
+
+                System.out.println("\n아무 키나 눌러 계속하세요...");
+                scanner.nextLine();
+            } else {
+                System.out.println("현재 페이지에 해당 번호의 관광지가 없습니다.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("올바른 번호를 입력해주세요.");
+        }
+    }
 
     private String inputName() {
         System.out.println("관광지 이름 검색 : ");
-
         return scanner.next();
     }
 
@@ -237,7 +279,6 @@ public class MainMenu {
         for (TravelVO m : list) {
             System.out.println(m);
         }
-
         System.out.println("----------------------------------------------------------");
     }
 
@@ -257,13 +298,15 @@ public class MainMenu {
             try{
                 System.out.print("해당 지역의 인기 관광지를 보고 싶으면 순위를 입력해주세요(이전 화면:-1) ");
                 int num = Integer.parseInt(scanner.next().trim());
-                //scanner.nextLine();
+
                 if (num == -1) {
                     //break;
                     return null;
                 }
                 else if(1<=num && num<=6)
-                    return list.get(num - 1).getDistrict();
+                    return list.get(num - 1).getDistrict(); // 선택한 지역을 반환
+                else
+                    System.err.println("1~6 또는 -1을 입력하세요.");
             }catch(NumberFormatException e){
                 System.err.println("숫자를 입력하세요.");
             }
@@ -290,7 +333,7 @@ public class MainMenu {
 
     public void displaySuccess(String message) {
         System.out.println();
-        System.out.println("success" + message);
+        System.out.println("success " + message);
         System.out.println();
     }
 
@@ -298,27 +341,19 @@ public class MainMenu {
         displaySuccess(message);
         System.out.println("\n-------------------- " + district + " 인기 관광지 목록 -------------------- ");
         System.out.println("--------------------------- " + "TOP 5" + " --------------------------- ");
-        List<TravelVO> keySet = new ArrayList<>(map.keySet());
-        keySet.sort((o1,o2)->map.get(o1).compareTo(map.get(o2)));
+        List<TravelVO> keySet = new ArrayList<>(map.keySet()); // Map의 key들을 list로 변환
+        keySet.sort((o1,o2)->Integer.valueOf(o2.getCount()).compareTo(Integer.valueOf(o1.getCount()))); //list를 key(TravelVO 객체)의 count값에의해 내림차순으로 정렬
+
         String format = "순위: %d, 조회수: %-2d, 지역: %3s, 관광지: %s\n";
-        for(TravelVO travelVo : keySet){
-            int rank = map.get(travelVo);
+        for(TravelVO travelVo : keySet){ //count 값이 높은 key부터 forEach 동작
+            int rank = map.get(travelVo); //key에 해당하는 value추출, value는 순위를 의미함
             System.out.printf(format,rank,travelVo.getCount(),district,travelVo.getTitle());
         }
     }
 
-    public void displayselectByCount(String message, ArrayList<TravelVO> list) {
-        System.out.println("success" + message);
-        for (TravelVO travel : list)
-            System.out.println(travel);
-    }
-
-
-
     public void displayAll(ArrayList<TravelVO> list) {
         for (TravelVO travel : list)
             System.out.println(travel);
-
     }
 
     public void displayMessage(String message) {
@@ -326,6 +361,4 @@ public class MainMenu {
         System.out.println(message);
         System.out.println();
     }
-
-
 }

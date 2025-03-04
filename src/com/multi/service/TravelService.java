@@ -23,12 +23,10 @@ public class TravelService {
             try {
                 dbcp.setInitOpenConnections(10);
             } catch (SQLException e) {
-//                throw new RuntimeException(e);
                 System.err.println(e.getMessage());
             }
         }
         travelDao = new TravelDao();
-
     }
 
     public ArrayList<TravelVO> selectByName(String name) throws CustomerException {
@@ -40,22 +38,9 @@ public class TravelService {
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
-
     }
-
-   /* public ArrayList<TravelVO> selectByCount() {
-        ArrayList<TravelVO> list = null;
-        try {
-            conn = dbcp.getConnection();
-            list = travelDao.selectByCount(conn);
-            return list;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }*/
 
     public void exitProgram() {
         dbcp.freeConnection(conn);
@@ -71,10 +56,8 @@ public class TravelService {
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
-
     }
 
     public HashMap<TravelVO,Integer> selectTouristAttByCount(String district) throws CustomerException {
@@ -87,7 +70,6 @@ public class TravelService {
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
     }
@@ -107,7 +89,6 @@ public class TravelService {
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
     }
@@ -120,14 +101,13 @@ public class TravelService {
             result = travelDao.insertZeroCount(conn);
             if(result>0)
                 if(conn!=null) conn.commit();
-                else
+            else
                 if(conn!=null) conn.rollback();
             return result;
         } catch(CustomerException e){
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
     }
@@ -147,10 +127,8 @@ public class TravelService {
             throw e;
         }
         catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
-
     }
 
     //김태용님
@@ -162,35 +140,41 @@ public class TravelService {
         } catch(CustomerException e){
             throw e;
         } catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
         return attractions;
     }
 
     // 관광지 번호로 상세 정보 가져오기
-   /* public TravelVO getAttractionByNo(int attractionNo) {
+    public TravelVO getAttractionByNo(int attractionNo) throws CustomerException {
         TravelVO attraction = null;
         try (Connection conn = dbcp.getConnection()) {
             attraction = travelDao.getAttractionByNo(conn, attractionNo);
-        } catch (SQLException e) {
-            throw new RuntimeException("DB 연결 오류", e);
+        } catch(CustomerException e){
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
         }
         return attraction;
-    }*/
+    }
 
     // 관광지 조회수 증가
-   /* public void increaseAttractionViewCount(int attractionNo) {
+    public  int increaseAttractionViewCount(int attractionNo) throws CustomerException {
+        int result = 0;
         try (Connection conn = dbcp.getConnection()) {
-            travelDao.increaseViewCount(conn, attractionNo);
-        } catch (SQLException e) {
-            throw new RuntimeException("DB 연결 오류", e);
+            conn.setAutoCommit(false);
+            result = travelDao.increaseViewCount(conn, attractionNo);
+            if(result>0)
+                if(conn!=null) conn.commit();
+            else
+                if(conn!=null) conn.rollback();
+        } catch(CustomerException e){
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
         }
-    }*/
+        return result;
+    }
 
     public ArrayList<TravelVO> selectPage(int currPage, int pageSize) throws CustomerException {
         ArrayList<TravelVO> list = null;
@@ -200,12 +184,9 @@ public class TravelService {
         } catch(CustomerException e){
             throw e;
         } catch (Exception e) {
-//            throw new RuntimeException(e);
             throw new CustomerException(e.getMessage());
         }
-
         return list;
-
     }
 }
 
