@@ -326,7 +326,6 @@ public class MainController {
 
             if(!list.isEmpty()) {
                 mainMenu.displayAll(list);
-                result = false;
             }
             else {
                 mainMenu.displayError("조회 결과 없습니다.");

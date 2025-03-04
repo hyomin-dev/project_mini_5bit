@@ -12,27 +12,34 @@ public class MainMenu {
     public void menu() {
         while (true) {
             try {
-                System.out.println("----------------------------------------");
-                System.out.println("1. 전체목록");
-                System.out.println("2. 권역별 관광지");
-                System.out.println("3. 이름 검색");
-                System.out.println("4. 조회수별 검색");
+                System.out.println("\n-------------------- 관광지 정보 검색 프로그램 --------------------\n");
+                System.out.println("1. 전체목록");       //전상민
+                System.out.println("2. 권역별 관광지");   //김태용
+                System.out.println("3. 이름 검색");      //신유경
+                System.out.println("4. 조회수별 검색");   //최효민
+                System.out.println("0. 프로그램 종료");   //안태희 - DB 연결
+                System.out.println();
+                System.out.println("검색할 번호를 선택하세요 : ");
+
                 int choice = scanner.nextInt();
                 scanner.nextLine(); //버퍼 제거
                 switch (choice) {
                     case 1 -> {
+                        // 전상민
                         // 전체목록 보여주기 8개씩 14개 보여주기, 최 상단에 페이지 번호, 보여줄 목록: 지역, 관광지명,
                         selectPage();
                     }
                     case 2 -> {
-                        //mainController.showRegionMenu(); //김태용님
+                        // 김태용
+                        //mainController.showRegionMenu();
                         showRegionMenu();
                     }
                     case 3 -> {
+                        // 신유경
                         mainController.selectByName(inputName());
                     }
                     case 4 -> {
-                        //mainController.selectByCount(); //먼저 전부 가져오는 것으로 테스트*/
+                        // 최효민
                         mainController.selectDistrictByCount();
                     }
                     case 5 -> {
@@ -108,6 +115,7 @@ public class MainMenu {
             System.out.println("5. 경상권");
             System.out.println("6. 제주권");
             System.out.println("0. 이전 메뉴로 돌아가기");
+            System.out.println();
             System.out.print("원하시는 권역을 선택하세요: ");
 
             try {
@@ -212,7 +220,9 @@ public class MainMenu {
     // ↓↓↓↓↓ controller에서 호출하는 함수
 
     public void displayNoData() {
+        System.out.println();
         System.out.println("조회된 결과가 없습니다.");
+        System.out.println();
     }
 
     public void displayMemberList(ArrayList<TravelVO> list) {
@@ -256,19 +266,27 @@ public class MainMenu {
     }
 
     public void displayHome() {
-        System.out.println("초기화면으로 돌아갑니다.");
+        System.out.println();
+        System.out.println("메뉴 화면으로 돌아갑니다.");
+        System.out.println();
     }
 
     public void displayError() {
-        System.out.println("조회 결과 없음");
+        System.out.println();
+        System.out.println("조회된 결과가 없습니다.");
+        System.out.println();
     }
 
     public void displayError(String message) {
+        System.out.println();
         System.out.println("서비스 요청 처리 실패 : " + message);
+        System.out.println();
     }
 
     public void displaySuccess(String message) {
-        System.out.println("서비스 요청 성공" + message);
+        System.out.println();
+        System.out.println("success" + message);
+        System.out.println();
     }
 
     public void displayselectTouristAttByCount(String message, HashMap<TravelVO,Integer> map, String district) {
@@ -299,7 +317,9 @@ public class MainMenu {
     }
 
     public void displayMessage(String message) {
+        System.out.println();
         System.out.println(message);
+        System.out.println();
     }
 
 
