@@ -31,19 +31,22 @@ public class MainMenu {
                     }
                     case 2 -> {
                         // 김태용
+                        // 권역별 관광지 목록 보여주기
                         //mainController.showRegionMenu();
                         showRegionMenu();
                     }
                     case 3 -> {
                         // 신유경
+                        // 검색한 관광지 정보 보여주기
                         mainController.selectByName(inputName());
                     }
                     case 4 -> {
                         // 최효민
+                        // 조회수별 관광지 정보 보여주기
                         mainController.selectDistrictByCount();
                     }
-                    case 5 -> {
-                        System.out.println("정말로 끝내시겠습니까??(y/n)");
+                    case 0 -> {
+                        System.out.println("정말로 끝내시겠습니까?? ( y / n )");
                         if ('y' == scanner.next().toLowerCase().charAt(0)) {
                             mainController.exitProgram();
                             return;  // 프로그램 종료
@@ -74,49 +77,51 @@ public class MainMenu {
         boolean isFirst = true;
 
         mainController.selectPage(currPage, pageSize);
-        System.out.println("--------현재 페이지: " + (currPage + 1) + "페이지------------------");
+        System.out.println("---------------------- 현재 페이지: " + (currPage + 1) + "페이지 ----------------------");
         while (true) {
             if (!isFirst) //처음이 아니라면 실행
-                System.out.println("--------현재 페이지: " + (currPage + 1) + "페이지------------------");
+                System.out.println("---------------------- 현재 페이지: " + (currPage + 1) + "페이지 ----------------------");
             isFirst = false;
 
-            System.out.println("이전 페이지 p");
-            System.out.println("다음 페이지: n");
-            System.out.println("종료: e");
+            System.out.println("이전 페이지 : 1");
+            System.out.println("다음 페이지 : 2");
+            System.out.println("메뉴 화면으로 돌아가기 : 0");
+            System.out.print("선택: ");
 
             char key = scanner.next().trim().toLowerCase().charAt(0);
-            if (key == 'e')
+            if (key == '0')
                 break;
-            else if (key == 'p') {
-                System.out.println("이전페이지");
+            else if (key == '1') {
+                System.out.println("이전 페이지");
                 if (currPage == 0) {
                     System.out.println("현재 페이지가 첫 페이지 입니다.");
                 } else {
                     mainController.selectPage(--currPage, pageSize);
                 }
-            } else if (key == 'n') {
+            } else if (key == '2') {
+                System.out.println("다음 페이지");
                 if (mainController.selectPage(++currPage, pageSize)) {//true: 현재 페이지가 마지막 페이지임
                     --currPage;
                     System.out.println("현재 페이지가 마지막 페이지입니다.");
                 }
             } else
-                System.out.println("p, n, e중 하나를 입력하세요");
+                System.out.println("1, 2, 0중 하나를 입력하세요.");
         }
         scanner.nextLine(); //버퍼 비우기
     }
 
     private void showRegionMenu() { // 2번 기능
         while (true) {
-            System.out.println("\n==== 권역별 관광지 목록 ====");
+            System.out.println("\n----------------------- 권역별 관광지 목록 -----------------------");
             System.out.println("1. 수도권");
             System.out.println("2. 강원권");
             System.out.println("3. 충청권");
             System.out.println("4. 전라권");
             System.out.println("5. 경상권");
             System.out.println("6. 제주권");
-            System.out.println("0. 이전 메뉴로 돌아가기");
+            System.out.println("0. 메뉴 화면으로 돌아가기");
             System.out.println();
-            System.out.print("원하시는 권역을 선택하세요: ");
+            System.out.print("검색할 권역을 선택하세요. : ");
 
             try {
                 int choice = Integer.parseInt(scanner.nextLine());
@@ -157,7 +162,7 @@ public class MainMenu {
         int currentPage = 1;
 
         while (true) {
-            System.out.println("\n==== " + region + " 관광지 목록 (" + currentPage + "/" + totalPages + ") ====");
+            System.out.println("\n----------------- " + region + " 관광지 목록 (" + currentPage + "/" + totalPages + ") -----------------");
 
             // 현재 페이지에 표시할 관광지 범위 계산
             int startIdx = (currentPage - 1) * itemsPerPage;
@@ -166,13 +171,13 @@ public class MainMenu {
             // 관광지 목록 표시
             for (int i = startIdx; i < endIdx; i++) {
                 TravelVO attraction = attractions.get(i);
-                System.out.println("번호: " + attraction.getNo());
-                System.out.println("제목: " + attraction.getTitle());
-                System.out.println("설명: " + attraction.getDescription());
-                System.out.println("주소: " + attraction.getAddress());
-                System.out.println("전화번호: " + attraction.getPhone());
-                System.out.println("조회수: " + attraction.getCount());
-                System.out.println("===================================");
+                System.out.println("번호 : " + attraction.getNo());
+                System.out.println("제목 : " + attraction.getTitle());
+                System.out.println("설명 : " + attraction.getDescription());
+                System.out.println("주소 : " + attraction.getAddress());
+                System.out.println("전화번호 : " + attraction.getPhone());
+                System.out.println("조회수 : " + attraction.getCount());
+                System.out.println("--------------------------------------------------------");
             }
 
             // 페이지 네비게이션 메뉴 표시
@@ -237,8 +242,8 @@ public class MainMenu {
     }
 
     public String displayselectDistrictByCount(String message, ArrayList<TravelVO> list){ //예외처리 함
-       displaySuccess(message);
-        System.out.println("--------지역별 우선순위--------");
+        displaySuccess(message);
+        System.out.println("-------------------- 지역별 우선순위 -------------------- ");
         for (int i = 0; i < list.size(); i++) {
             String s = new StringBuilder()
                     .append(i + 1 + "순위 지역: ")
@@ -291,8 +296,8 @@ public class MainMenu {
 
     public void displayselectTouristAttByCount(String message, HashMap<TravelVO,Integer> map, String district) {
         displaySuccess(message);
-        System.out.println("------------------------ " + district + " 지역 -----------------------");
-        System.out.println("----------------------" + "인기 관광지 목록" + "-----------------------");
+        System.out.println("\n-------------------- " + district + " 인기 관광지 목록 -------------------- ");
+        System.out.println("--------------------------- " + "TOP 5" + " --------------------------- ");
         List<TravelVO> keySet = new ArrayList<>(map.keySet());
         keySet.sort((o1,o2)->map.get(o1).compareTo(map.get(o2)));
         String format = "순위: %d, 조회수: %-2d, 지역: %3s, 관광지: %s\n";
